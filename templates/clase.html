@@ -1,33 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    <title>Lecturas de Clase</title>
-</head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="#">Formulario</a></li>
-            <li><a href="consultas.html">Consultas</a></li>
-        </ul>
-    </nav>
-    <h1>Lecturas de Clase</h1>
-    <table>
-        <tr>
-            <th>ID de Clase</th>
-            <th>Hora</th>
-            <th>Emoción</th>
-            <th>Temperatura</th>
-        </tr>
+{% extends "base.html" %}
 
-        {% for lectura in lecturas %}
-        <tr>
-            <td>{{ lectura[1] }}</td>
-            <td>{{ lectura[2] }}</td>
-            <td>{{ lectura[3] }}</td>
-            <td>{{ lectura[4] }}</td>
-        </tr>
-        {% endfor %}
+{% block title %}
+Lecturas de Clase
+{% endblock %}
+
+{% block heading %}
+Lecturas de Clase
+{% endblock %}
+{% block additional_head %}
+<script>
+    // Recargar la página cada 4 segundos
+    setTimeout(function(){
+        location.reload();
+    }, 4000);
+</script>
+{% endblock %}
+
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID de Clase</th>
+                <th>Hora</th>
+                <th>Emoción</th>
+                <th>Temperatura</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lectura in lecturas %}
+            <tr>
+                <td>{{ lectura[1] }}</td>
+                <td>{{ lectura[2] }}</td>
+                <td>{{ lectura[3] }}</td>
+                <td>{{ lectura[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-</body>
-</html>
+    <form action="/clase" method="post" class="buttons text-center mt-4">
+        <input type="submit" class="btn btn-danger" name="Terminar" value="Terminar Clase"/>
+        <input type="submit" class="btn btn-primary ml-2" name="ax" value="Actualizar"/>
+    </form>
+
+{% endblock %}

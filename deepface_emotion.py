@@ -1,41 +1,39 @@
 import cv2
 from deepface import DeepFace
-import time
-import requests
 
 # Umbral de confianza para las emociones
 emotion_confidence_threshold = 30
 
-# URL donde se enviarán las emociones
-url = 'http://localhost:5000/emotions'
+cap = cv2.VideoCapture(0)
 
 # Saltar n-1 fotogramas para reducir la carga de procesamiento
 frame_skip_rate = 5
 frame_count = 0
-# Capturar el fotograma de la cámara web
-cap = cv2.VideoCapture(0)
+
 while True:
     ret, frame = cap.read()
+    frame_count += 1
 
-    # Detección de rostros y análisis de emociones
-    result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
+    if frame_count % frame_skip_rate == 0:
+        # Detección de rostros y análisis de emociones
+        result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
 
-    # Identificación de la emoción dominante
-    emotion_counts = {}
-    for face in result:
-        dominant_emotion = face['dominant_emotion']
-        if dominant_emotion in emotion_counts:
-            emotion_counts[dominant_emotion] += 1
-        else:
-            emotion_counts[dominant_emotion] = 1
+        # Dibujar rectángulo y mostrar las emociones en la ventana
+        for face in result:
+            x, y, w, h = face['region']['x'], face['region']['y'], face['region']['w'], face['region']['h']
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-    if emotion_counts:
-        # Determinar la emoción predominante
-        max_emotion = max(emotion_counts, key=emotion_counts.get)
-        print(f"Emoción predominante: {max_emotion}")
+            dominant_emotion = face['dominant_emotion']
+            emotion_score = face['emotion'][dominant_emotion]
 
-        # Enviar la emoción predominante al servidor
-        r = requests.post(url, json={'emotion': max_emotion})
+            if emotion_score > emotion_confidence_threshold:
+                emotion_text = f"{dominant_emotion}: {emotion_score:.1f}%"
+                cv2.putText(frame, emotion_text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2, cv2.LINE_AA)
 
-    # Esperar 15 minutos 900 segundos es 15 minutos
-    time.sleep(3)
+    cv2.imshow('Emotion Recognition', frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()

@@ -20,5 +20,4 @@ def emotion_detection():
     if emotion_counts:
         # Determinar la emoción predominante
         max_emotion = max(emotion_counts, key=emotion_counts.get)
-        print(f"Emoción predominante: {max_emotion}")
         return max_emotion
