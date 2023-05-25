@@ -29,7 +29,7 @@ while True:
             if emotion_score > emotion_confidence_threshold:
                 emotion_text = f"{dominant_emotion}: {emotion_score:.1f}%"
                 cv2.putText(frame, emotion_text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2, cv2.LINE_AA)
-
+            print(emotion_text)
     cv2.imshow('Emotion Recognition', frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
