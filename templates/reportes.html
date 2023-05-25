@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reportes de Clase
+{% endblock %}
+
+{% block heading %}
+Reportes de Clase
+{% endblock %}
+
+{% block content %}
+<form action="/reportes" method="post" class="mb-4">
+    <div class="form-group">
+        <label for="materia" class="font-weight-bold">Materia:</label>
+        <select class="form-control" id="materia" name="materia" required>
+            {% for materia in materias_disponibles %}
+            <option value="{{ materia }}">{{ materia }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="dia">Día:</label>
+        <select class="form-control" id="dia" name="dia" required>
+            {% for dia in dias_disponibles %}
+            <option value="{{ dia }}">{{ dia }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="hora">Hora (opcional):</label>
+        <input type="text" class="form-control" id="hora" name="hora">
+    </div>
+    <div class="buttons">
+        <input type="submit" class="btn btn-success" value="Buscar"/>
+    </div>
+</form>
+{% if emocion_mas_registrada %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                Estadísticas de Emoción
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Emoción más registrada</h5>
+                <p class="card-text">{{ emocion_mas_registrada[0] }} con {{ emocion_mas_registrada[1] }} registros.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                Estadísticas de Temperatura
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Temperatura promedio</h5>
+                <p class="card-text">{{ temperatura_promedio[0] }} grados Celsius.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
